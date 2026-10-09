@@ -10,15 +10,15 @@
           "create_monthly_utility_meter": "Create monthly utility meter"
         }
       }
-    },
-    "options": {
-      "step": {
-        "init": {
-          "title": "Remove utility meters",
-          "description": "Tick the checkboxes for the utility meters you want to delete. Unchecked utility meters will be kept. {meter_count} linked utility meter(s) found.",
-          "data": {
-            "utility_meters": "Utility meters to delete"
-          }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Remove utility meters",
+        "description": "Tick the checkboxes for the utility meters you want to delete. Unchecked utility meters will be kept. {meter_count} linked utility meter(s) found.",
+        "data": {
+          "utility_meters": "Utility meters to delete"
         }
       }
     }
