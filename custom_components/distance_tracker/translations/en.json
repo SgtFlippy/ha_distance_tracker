@@ -9,6 +9,13 @@
           "create_daily_utility_meter": "Create daily utility meter",
           "create_weekly_utility_meter": "Create weekly utility meter",
           "create_monthly_utility_meter": "Create monthly utility meter"
+        },
+        "data_description": {
+          "device_tracker": "Select the device tracker whose GPS location should be used to calculate distance.",
+          "binary_sensor": "Distance is recorded only while this binary sensor is on.",
+          "create_daily_utility_meter": "Check this to automatically create a helper that resets daily.",
+          "create_weekly_utility_meter": "Check this to automatically create a helper that resets weekly.",
+          "create_monthly_utility_meter": "Check this to automatically create a helper that resets monthly."
         }
       }
     }
@@ -20,6 +27,9 @@
         "description": "Tick the checkboxes next to the utility meters you want to delete. Leave a box unchecked to keep that meter. {meter_count} linked utility meter(s) found.",
         "data": {
           "utility_meters": "Utility meters to delete"
+        },
+        "data_description": {
+          "utility_meters": "Select the meters to delete. Any meter you leave unselected will be kept."
         }
       }
     }
