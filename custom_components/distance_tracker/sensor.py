@@ -60,6 +60,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         if config.get(option, False)
     )
     sensor_name = config.get("sensor_name") or f"{entry.title} Afstand"
+    distance_unit = config.get("distance_unit", "km")
     
     async_add_entities(
         [
@@ -69,6 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
                 tracker_entity,
                 bluetooth_entity,
                 utility_meter_cycles,
+                distance_unit,
             ),
             TimeSpentSensor(
                 entry.entry_id,
@@ -85,12 +87,19 @@ class DistanceSensor(RestoreEntity, SensorEntity):
     """Sensor tracking total distance using breadcrumbs and UI config."""
 
     def __init__(
-        self, entry_id, sensor_name, tracker_entity, bluetooth_entity, utility_meter_cycles
+        self,
+        entry_id,
+        sensor_name,
+        tracker_entity,
+        bluetooth_entity,
+        utility_meter_cycles,
+        distance_unit,
     ):
         self._entry_id = entry_id
         self._tracker_entity = tracker_entity
         self._bluetooth_entity = bluetooth_entity
         self._utility_meter_cycles = utility_meter_cycles
+        self._distance_unit = distance_unit
         
         self._attr_name = sensor_name
         self._attr_unique_id = f"distance_tracker_{entry_id}_distance"
@@ -99,7 +108,9 @@ class DistanceSensor(RestoreEntity, SensorEntity):
             name=sensor_name,
             manufacturer="Distance Tracker",
         )
-        self._attr_native_unit_of_measurement = UnitOfLength.KILOMETERS
+        self._attr_native_unit_of_measurement = (
+            UnitOfLength.MILES if distance_unit == "mi" else UnitOfLength.KILOMETERS
+        )
         self._attr_device_class = SensorDeviceClass.DISTANCE
         self._attr_icon = "mdi:map-marker-distance"
         self._state = 0.0
@@ -174,7 +185,11 @@ class DistanceSensor(RestoreEntity, SensorEntity):
         if self._last_lat is not None and self._last_lon is not None:
             distance_segment = haversine(self._last_lon, self._last_lat, lon, lat)
             if distance_segment > MIN_DISTANCE:
-                self._state += distance_segment
+                self._state += (
+                    distance_segment * 0.621371192237334
+                    if self._distance_unit == "mi"
+                    else distance_segment
+                )
                 self.async_write_ha_state()
 
         self._last_lat = lat

@@ -9,6 +9,8 @@ The distance sensor is grouped under its own Home Assistant device. Utility Mete
 
 During setup, select a `device_tracker` entity and a `binary_sensor` entity from the dropdowns, then enter the name to use for the distance sensor. Each dropdown is filtered to show entities of the appropriate type that are available in your Home Assistant instance.
 
+During setup, choose whether distance should be reported in kilometers or miles. The distance sensor and its Utility Meter helpers use the selected unit.
+
 A quick vibe coded integration to track a person when connected to a certain device. It asks for the device to track and a binary sensor which needs to be on to start tracking.
 
 You can create a helper binary sensor for when connected to a certain bluetooth device (in my case a bike) to start tracking the distance while connected.

@@ -8,6 +8,7 @@ UTILITY_METER_DOMAIN = "utility_meter"
 CONFIG_FIELDS = {
     "device_tracker": "Choose the device to track",
     "binary_sensor": "Choose the binary sensor that needs to be on to track",
+    "distance_unit": "Distance unit",
     "create_daily_utility_meter": "Create daily distance utility meter (resets every day)",
     "create_weekly_utility_meter": "Create weekly distance utility meter (resets every week)",
     "create_monthly_utility_meter": "Create monthly distance utility meter (resets every month)",
@@ -47,11 +48,23 @@ class DistanceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         data_schema = vol.Schema(
             {
+                vol.Required(CONFIG_FIELDS["sensor_name"]): selector.TextSelector(),
                 vol.Required(CONFIG_FIELDS["device_tracker"]): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="device_tracker")
                 ),
                 vol.Required(CONFIG_FIELDS["binary_sensor"]): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="binary_sensor")
+                ),
+                vol.Required(CONFIG_FIELDS["distance_unit"], default="km"): (
+                    selector.SelectSelector(
+                        selector.SelectSelectorConfig(
+                            options=[
+                                {"value": "km", "label": "Kilometers (km)"},
+                                {"value": "mi", "label": "Miles (mi)"},
+                            ],
+                            mode=selector.SelectSelectorMode.DROPDOWN,
+                        )
+                    )
                 ),
                 vol.Required(CONFIG_FIELDS["create_daily_utility_meter"], default=False): (
                     selector.BooleanSelector()
@@ -71,7 +84,6 @@ class DistanceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONFIG_FIELDS["create_monthly_time_utility_meter"], default=False): (
                     selector.BooleanSelector()
                 ),
-                vol.Required(CONFIG_FIELDS["sensor_name"]): selector.TextSelector(),
             }
         )
 

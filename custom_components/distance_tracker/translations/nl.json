@@ -6,6 +6,7 @@
         "data": {
           "Choose the device to track": "Kies het apparaat om te volgen",
           "Choose the binary sensor that needs to be on to track": "Kies de binaire sensor die ingeschakeld moet zijn om het bijhouden te starten",
+          "Distance unit": "Afstandseenheid",
           "Create daily distance utility meter (resets every day)": "Dagelijkse afstands-utility meter aanmaken (wordt elke dag gereset)",
           "Create weekly distance utility meter (resets every week)": "Wekelijkse afstands-utility meter aanmaken (wordt elke week gereset)",
           "Create monthly distance utility meter (resets every month)": "Maandelijkse afstands-utility meter aanmaken (wordt elke maand gereset)",
@@ -17,6 +18,7 @@
         "data_description": {
           "Choose the device to track": "Selecteer de device tracker waarvan de GPS-locatie wordt gebruikt om de afstand te berekenen.",
           "Choose the binary sensor that needs to be on to track": "Afstand wordt alleen geregistreerd zolang deze binaire sensor aan staat.",
+          "Distance unit": "Kies of de afstand in kilometers of mijlen wordt gemeten. Afstandshelpers gebruiken dezelfde eenheid.",
           "Create daily distance utility meter (resets every day)": "Maakt een meter aan die de afgelegde afstand optelt en dagelijks wordt gereset.",
           "Create weekly distance utility meter (resets every week)": "Maakt een meter aan die de afgelegde afstand optelt en wekelijks wordt gereset.",
           "Create monthly distance utility meter (resets every month)": "Maakt een meter aan die de afgelegde afstand optelt en maandelijks wordt gereset.",
