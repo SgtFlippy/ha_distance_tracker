@@ -3,11 +3,22 @@
     "step": {
       "user": {
         "data": {
-          "device_tracker": "Device tracker",
-          "binary_sensor": "Binary sensor",
-          "create_daily_utility_meter": "Create a daily Utility Meter helper",
-          "create_weekly_utility_meter": "Create a weekly Utility Meter helper",
-          "create_monthly_utility_meter": "Create a monthly Utility Meter helper"
+          "device_tracker": "Choose the device to track",
+          "binary_sensor": "Choose the binary sensor that needs to be turned on to start tracking",
+          "create_daily_utility_meter": "Create daily utility meter",
+          "create_weekly_utility_meter": "Create weekly utility meter",
+          "create_monthly_utility_meter": "Create monthly utility meter"
+        }
+      }
+    },
+    "options": {
+      "step": {
+        "init": {
+          "title": "Remove utility meters",
+          "description": "Select the utility meters linked to this distance sensor that you want to remove. {meter_count} linked meter(s) found.",
+          "data": {
+            "utility_meters": "Utility meters to remove"
+          }
         }
       }
     }
