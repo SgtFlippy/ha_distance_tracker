@@ -1,7 +1,7 @@
 # ha_distance_tracker
 You can also choose whether to create daily, weekly, and/or monthly Utility Meter helpers for the distance sensor. Each selected helper is created as a standard Home Assistant Utility Meter.
 
-During setup, select a `device_tracker` entity and a `binary_sensor` entity from the dropdowns. Each dropdown is filtered to show entities of the appropriate type that are available in your Home Assistant instance.
+During setup, select a `device_tracker` entity and a `binary_sensor` entity from the dropdowns, then enter the name to use for the distance sensor. Each dropdown is filtered to show entities of the appropriate type that are available in your Home Assistant instance.
 
 A quick vibe coded integration to track a person when connected to a certain device. It asks for the device to track and a binary sensor which needs to be on to start tracking.
 

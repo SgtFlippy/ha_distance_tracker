@@ -37,12 +37,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         for option, cycle in UTILITY_METER_OPTIONS.items()
         if config.get(option, False)
     )
+    sensor_name = config.get("sensor_name") or f"{entry.title} Afstand"
     
     async_add_entities(
         [
             DistanceSensor(
                 entry.entry_id,
-                entry.title,
+                sensor_name,
                 tracker_entity,
                 bluetooth_entity,
                 utility_meter_cycles,
@@ -55,14 +56,14 @@ class DistanceSensor(RestoreEntity, SensorEntity):
     """Sensor tracking total distance using breadcrumbs and UI config."""
 
     def __init__(
-        self, entry_id, title, tracker_entity, bluetooth_entity, utility_meter_cycles
+        self, entry_id, sensor_name, tracker_entity, bluetooth_entity, utility_meter_cycles
     ):
         self._entry_id = entry_id
         self._tracker_entity = tracker_entity
         self._bluetooth_entity = bluetooth_entity
         self._utility_meter_cycles = utility_meter_cycles
         
-        self._attr_name = f"{title} Afstand"
+        self._attr_name = sensor_name
         self._attr_unique_id = f"distance_tracker_{entry_id}_distance"
         self._attr_native_unit_of_measurement = UnitOfLength.KILOMETERS
         self._attr_device_class = SensorDeviceClass.DISTANCE

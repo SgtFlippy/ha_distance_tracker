@@ -10,6 +10,7 @@ CONFIG_FIELDS = {
     "create_daily_utility_meter": "Create daily utility meter (resets every day)",
     "create_weekly_utility_meter": "Create weekly utility meter (resets every week)",
     "create_monthly_utility_meter": "Create monthly utility meter (resets every month)",
+    "sensor_name": "Name for the distance sensor",
 }
 UTILITY_METERS_FIELD = "Select utility meters to delete (unchecked meters are kept)"
 
@@ -47,6 +48,7 @@ class DistanceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONFIG_FIELDS["create_monthly_utility_meter"], default=False): (
                     selector.BooleanSelector()
                 ),
+                vol.Required(CONFIG_FIELDS["sensor_name"]): selector.TextSelector(),
             }
         )
 

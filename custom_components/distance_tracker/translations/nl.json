@@ -8,14 +8,16 @@
           "Choose the binary sensor that needs to be on to track": "Kies de binaire sensor die ingeschakeld moet zijn om het bijhouden te starten",
           "Create daily utility meter (resets every day)": "Dagelijkse utility meter aanmaken (wordt elke dag gereset)",
           "Create weekly utility meter (resets every week)": "Wekelijkse utility meter aanmaken (wordt elke week gereset)",
-          "Create monthly utility meter (resets every month)": "Maandelijkse utility meter aanmaken (wordt elke maand gereset)"
+          "Create monthly utility meter (resets every month)": "Maandelijkse utility meter aanmaken (wordt elke maand gereset)",
+          "Name for the distance sensor": "Naam voor de afstandssensor"
         },
         "data_description": {
           "Choose the device to track": "Selecteer de device tracker waarvan de GPS-locatie wordt gebruikt om de afstand te berekenen.",
           "Choose the binary sensor that needs to be on to track": "Afstand wordt alleen geregistreerd zolang deze binaire sensor aan staat.",
           "Create daily utility meter (resets every day)": "Vink aan om automatisch een helper aan te maken die dagelijks wordt gereset.",
           "Create weekly utility meter (resets every week)": "Vink aan om automatisch een helper aan te maken die wekelijks wordt gereset.",
-          "Create monthly utility meter (resets every month)": "Vink aan om automatisch een helper aan te maken die maandelijks wordt gereset."
+          "Create monthly utility meter (resets every month)": "Vink aan om automatisch een helper aan te maken die maandelijks wordt gereset.",
+          "Name for the distance sensor": "Voer de naam in die Home Assistant voor de afstandssensor moet weergeven."
         }
       }
     }
