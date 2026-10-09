@@ -4,18 +4,18 @@
       "user": {
         "description": "Kies het apparaat en de binaire sensor voor het bijhouden van de afstand. Vink aan voor welke perioden je een utility meter wilt laten aanmaken.",
         "data": {
-          "device_tracker": "Kies het apparaat om te volgen",
-          "binary_sensor": "Kies de binaire sensor die ingeschakeld moet zijn om het bijhouden te starten",
-          "create_daily_utility_meter": "Dagelijkse utility meter aanmaken",
-          "create_weekly_utility_meter": "Wekelijkse utility meter aanmaken",
-          "create_monthly_utility_meter": "Maandelijkse utility meter aanmaken"
+          "Choose the device to track": "Kies het apparaat om te volgen",
+          "Choose the binary sensor that needs to be on to track": "Kies de binaire sensor die ingeschakeld moet zijn om het bijhouden te starten",
+          "Create daily utility meter (resets every day)": "Dagelijkse utility meter aanmaken (wordt elke dag gereset)",
+          "Create weekly utility meter (resets every week)": "Wekelijkse utility meter aanmaken (wordt elke week gereset)",
+          "Create monthly utility meter (resets every month)": "Maandelijkse utility meter aanmaken (wordt elke maand gereset)"
         },
         "data_description": {
-          "device_tracker": "Selecteer de device tracker waarvan de GPS-locatie wordt gebruikt om de afstand te berekenen.",
-          "binary_sensor": "Afstand wordt alleen geregistreerd zolang deze binaire sensor aan staat.",
-          "create_daily_utility_meter": "Vink aan om automatisch een helper aan te maken die dagelijks wordt gereset.",
-          "create_weekly_utility_meter": "Vink aan om automatisch een helper aan te maken die wekelijks wordt gereset.",
-          "create_monthly_utility_meter": "Vink aan om automatisch een helper aan te maken die maandelijks wordt gereset."
+          "Choose the device to track": "Selecteer de device tracker waarvan de GPS-locatie wordt gebruikt om de afstand te berekenen.",
+          "Choose the binary sensor that needs to be on to track": "Afstand wordt alleen geregistreerd zolang deze binaire sensor aan staat.",
+          "Create daily utility meter (resets every day)": "Vink aan om automatisch een helper aan te maken die dagelijks wordt gereset.",
+          "Create weekly utility meter (resets every week)": "Vink aan om automatisch een helper aan te maken die wekelijks wordt gereset.",
+          "Create monthly utility meter (resets every month)": "Vink aan om automatisch een helper aan te maken die maandelijks wordt gereset."
         }
       }
     }
@@ -26,10 +26,10 @@
         "title": "Utility meters verwijderen",
         "description": "Vink de utility meters aan die je wilt verwijderen. Niet-aangevinkte meters blijven behouden. Er zijn {meter_count} gekoppelde utility meter(s) gevonden.",
         "data": {
-          "utility_meters": "Te verwijderen utility meters"
+          "Select utility meters to delete (unchecked meters are kept)": "Selecteer utility meters om te verwijderen (niet-aangevinkte meters blijven behouden)"
         },
         "data_description": {
-          "utility_meters": "Selecteer de meters die verwijderd moeten worden. Niet-geselecteerde meters blijven behouden."
+          "Select utility meters to delete (unchecked meters are kept)": "Selecteer de meters die verwijderd moeten worden. Niet-aangevinkte meters blijven behouden."
         }
       }
     }

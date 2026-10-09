@@ -4,6 +4,14 @@ from homeassistant.helpers import entity_registry, selector
 
 DOMAIN = "distance_tracker"
 UTILITY_METER_DOMAIN = "utility_meter"
+CONFIG_FIELDS = {
+    "device_tracker": "Choose the device to track",
+    "binary_sensor": "Choose the binary sensor that needs to be on to track",
+    "create_daily_utility_meter": "Create daily utility meter (resets every day)",
+    "create_weekly_utility_meter": "Create weekly utility meter (resets every week)",
+    "create_monthly_utility_meter": "Create monthly utility meter (resets every month)",
+}
+UTILITY_METERS_FIELD = "Select utility meters to delete (unchecked meters are kept)"
 
 class DistanceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Distance Tracker."""
@@ -13,26 +21,30 @@ class DistanceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         errors = {}
         if user_input is not None:
+            data = {
+                key: user_input[display_name]
+                for key, display_name in CONFIG_FIELDS.items()
+            }
             return self.async_create_entry(
-                title=f"Distance Tracker ({user_input['device_tracker'].split('.')[-1]})",
-                data=user_input
+                title=f"Distance Tracker ({data['device_tracker'].split('.')[-1]})",
+                data=data
             )
 
         data_schema = vol.Schema(
             {
-                vol.Required("device_tracker"): selector.EntitySelector(
+                vol.Required(CONFIG_FIELDS["device_tracker"]): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="device_tracker")
                 ),
-                vol.Required("binary_sensor"): selector.EntitySelector(
+                vol.Required(CONFIG_FIELDS["binary_sensor"]): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="binary_sensor")
                 ),
-                vol.Required("create_daily_utility_meter", default=False): (
+                vol.Required(CONFIG_FIELDS["create_daily_utility_meter"], default=False): (
                     selector.BooleanSelector()
                 ),
-                vol.Required("create_weekly_utility_meter", default=False): (
+                vol.Required(CONFIG_FIELDS["create_weekly_utility_meter"], default=False): (
                     selector.BooleanSelector()
                 ),
-                vol.Required("create_monthly_utility_meter", default=False): (
+                vol.Required(CONFIG_FIELDS["create_monthly_utility_meter"], default=False): (
                     selector.BooleanSelector()
                 ),
             }
@@ -67,7 +79,7 @@ class DistanceTrackerOptionsFlow(config_entries.OptionsFlow):
         ]
 
         if user_input is not None:
-            selected_ids = set(user_input.get("utility_meters", []))
+            selected_ids = set(user_input.get(UTILITY_METERS_FIELD, []))
             for meter_entry in meter_entries:
                 if meter_entry.entry_id in selected_ids:
                     await self.hass.config_entries.async_remove(meter_entry.entry_id)
@@ -88,7 +100,7 @@ class DistanceTrackerOptionsFlow(config_entries.OptionsFlow):
         ]
         data_schema = vol.Schema(
             {
-                vol.Optional("utility_meters", default=[]): selector.SelectSelector(
+                vol.Optional(UTILITY_METERS_FIELD, default=[]): selector.SelectSelector(
                     selector.SelectSelectorConfig(
                         options=meter_options,
                         multiple=True,

@@ -4,18 +4,18 @@
       "user": {
         "description": "Choose the device and binary sensor for tracking. Check any utility meter periods you want created.",
         "data": {
-          "device_tracker": "Choose the device to track",
-          "binary_sensor": "Choose the binary sensor that needs to be turned on to start tracking",
-          "create_daily_utility_meter": "Create daily utility meter",
-          "create_weekly_utility_meter": "Create weekly utility meter",
-          "create_monthly_utility_meter": "Create monthly utility meter"
+          "Choose the device to track": "Choose the device to track",
+          "Choose the binary sensor that needs to be on to track": "Choose the binary sensor that needs to be on to track",
+          "Create daily utility meter (resets every day)": "Create daily utility meter (resets every day)",
+          "Create weekly utility meter (resets every week)": "Create weekly utility meter (resets every week)",
+          "Create monthly utility meter (resets every month)": "Create monthly utility meter (resets every month)"
         },
         "data_description": {
-          "device_tracker": "Select the device tracker whose GPS location should be used to calculate distance.",
-          "binary_sensor": "Distance is recorded only while this binary sensor is on.",
-          "create_daily_utility_meter": "Check this to automatically create a helper that resets daily.",
-          "create_weekly_utility_meter": "Check this to automatically create a helper that resets weekly.",
-          "create_monthly_utility_meter": "Check this to automatically create a helper that resets monthly."
+          "Choose the device to track": "Select the device tracker whose GPS location should be used to calculate distance.",
+          "Choose the binary sensor that needs to be on to track": "Distance is recorded only while this binary sensor is on.",
+          "Create daily utility meter (resets every day)": "Check this to automatically create a helper that resets daily.",
+          "Create weekly utility meter (resets every week)": "Check this to automatically create a helper that resets weekly.",
+          "Create monthly utility meter (resets every month)": "Check this to automatically create a helper that resets monthly."
         }
       }
     }
@@ -26,10 +26,10 @@
         "title": "Remove utility meters",
         "description": "Tick the checkboxes next to the utility meters you want to delete. Leave a box unchecked to keep that meter. {meter_count} linked utility meter(s) found.",
         "data": {
-          "utility_meters": "Utility meters to delete"
+          "Select utility meters to delete (unchecked meters are kept)": "Select utility meters to delete (unchecked meters are kept)"
         },
         "data_description": {
-          "utility_meters": "Select the meters to delete. Any meter you leave unselected will be kept."
+          "Select utility meters to delete (unchecked meters are kept)": "Select the meters to delete. Any meter you leave unselected will be kept."
         }
       }
     }
