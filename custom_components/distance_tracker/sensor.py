@@ -6,6 +6,7 @@ from homeassistant.helpers.event import async_track_state_change_event
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceInfo
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -65,6 +66,11 @@ class DistanceSensor(RestoreEntity, SensorEntity):
         
         self._attr_name = sensor_name
         self._attr_unique_id = f"distance_tracker_{entry_id}_distance"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, entry_id)},
+            name=sensor_name,
+            manufacturer="Distance Tracker",
+        )
         self._attr_native_unit_of_measurement = UnitOfLength.KILOMETERS
         self._attr_device_class = SensorDeviceClass.DISTANCE
         self._attr_icon = "mdi:map-marker-distance"
