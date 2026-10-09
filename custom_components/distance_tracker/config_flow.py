@@ -5,7 +5,7 @@ import homeassistant.helpers.config_validation as cv
 
 DOMAIN = "distance_tracker"
 
-class TrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class DistanceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Distance Tracker."""
     VERSION = 1
 
@@ -14,7 +14,7 @@ class TrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
         if user_input is not None:
             return self.async_create_entry(
-                title=f"Afstand Tracker ({user_input['device_tracker'].split('.')[-1]})",
+                title=f"Distance Tracker ({user_input['device_tracker'].split('.')[-1]})",
                 data=user_input
             )
 

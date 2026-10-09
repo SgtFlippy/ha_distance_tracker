@@ -31,7 +31,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     async_add_entities([DistanceSensor(entry.entry_id, entry.title, tracker_entity, bluetooth_entity)], True)
 
 class DistanceSensor(RestoreEntity, SensorEntity):
-    """Sensor tracking total bike distance using breadcrumbs and UI config."""
+    """Sensor tracking total distance using breadcrumbs and UI config."""
 
     def __init__(self, entry_id, title, tracker_entity, bluetooth_entity):
         self._entry_id = entry_id
@@ -42,7 +42,7 @@ class DistanceSensor(RestoreEntity, SensorEntity):
         self._attr_unique_id = f"distance_tracker_{entry_id}_distance"
         self._attr_native_unit_of_measurement = UnitOfLength.KILOMETERS
         self._attr_device_class = SensorDeviceClass.DISTANCE
-        self._attr_icon = "mdi:bike"
+        self._attr_icon = "mdi:map-marker-distance"
         self._state = 0.0
         self._last_lat = None
         self._last_lon = None
