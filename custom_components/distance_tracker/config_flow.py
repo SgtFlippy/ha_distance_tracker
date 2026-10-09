@@ -1,7 +1,6 @@
 import voluptuous as vol
 from homeassistant import config_entries
-from homeassistant.core import callback
-import homeassistant.helpers.config_validation as cv
+from homeassistant.helpers import selector
 
 DOMAIN = "distance_tracker"
 
@@ -18,11 +17,17 @@ class DistanceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 data=user_input
             )
 
-        DATA_SCHEMA = vol.Schema({
-            vol.Required("device_tracker", default="device_tracker."): str,
-            vol.Required("binary_sensor", default="binary_sensor."): str,
-        })
+        data_schema = vol.Schema(
+            {
+                vol.Required("device_tracker"): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="device_tracker")
+                ),
+                vol.Required("binary_sensor"): selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="binary_sensor")
+                ),
+            }
+        )
 
         return self.async_show_form(
-            step_id="user", data_schema=DATA_SCHEMA, errors=errors
+            step_id="user", data_schema=data_schema, errors=errors
         )
