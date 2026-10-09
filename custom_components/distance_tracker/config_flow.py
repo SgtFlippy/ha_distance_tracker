@@ -17,6 +17,11 @@ CONFIG_FIELDS = {
     "sensor_name": "Name for the distance sensor",
 }
 UTILITY_METERS_FIELD = "Select utility meters to delete (unchecked meters are kept)"
+DISTANCE_METER_FIELDS = {
+    "Create daily distance utility meter if missing": "daily",
+    "Create weekly distance utility meter if missing": "weekly",
+    "Create monthly distance utility meter if missing": "monthly",
+}
 TIME_METER_FIELDS = {
     "Create daily time utility meter if missing": "daily",
     "Create weekly time utility meter if missing": "weekly",
@@ -36,7 +41,7 @@ class DistanceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 for key, display_name in CONFIG_FIELDS.items()
             }
             return self.async_create_entry(
-                title=f"Distance Tracker ({data['device_tracker'].split('.')[-1]})",
+                title=data["sensor_name"],
                 data=data
             )
 
@@ -104,18 +109,61 @@ class DistanceTrackerOptionsFlow(config_entries.OptionsFlow):
             if entry.options.get("source", entry.data.get("source"))
             in sensor_entity_ids
         ]
+        meter_cycles_by_source = {
+            source_entity_id: {
+                entry.options.get("cycle")
+                for entry in meter_entries
+                if entry.options.get("source", entry.data.get("source"))
+                == source_entity_id
+            }
+            for source_entity_id in sensor_entity_ids
+        }
+        missing_meter_fields = {
+            **{
+                field: cycle
+                for field, cycle in DISTANCE_METER_FIELDS.items()
+                if distance_sensor_entity_id is not None
+                and cycle
+                not in meter_cycles_by_source.get(distance_sensor_entity_id, set())
+            },
+            **{
+                field: cycle
+                for field, cycle in TIME_METER_FIELDS.items()
+                if time_sensor_entity_id is not None
+                and cycle
+                not in meter_cycles_by_source.get(time_sensor_entity_id, set())
+            },
+        }
 
         if user_input is not None:
+            selected_distance_cycles = [
+                cycle
+                for field, cycle in missing_meter_fields.items()
+                if field in DISTANCE_METER_FIELDS
+                if user_input.get(field, False)
+            ]
             selected_time_cycles = [
                 cycle
-                for field, cycle in TIME_METER_FIELDS.items()
+                for field, cycle in missing_meter_fields.items()
+                if field in TIME_METER_FIELDS
                 if user_input.get(field, False)
             ]
             if selected_time_cycles and time_sensor_entity_id is None:
                 return self.async_show_form(
                     step_id="init",
-                    data_schema=self._get_data_schema(meter_entries),
+                    data_schema=self._get_data_schema(
+                        meter_entries, missing_meter_fields
+                    ),
                     errors={"base": "time_sensor_not_found"},
+                    description_placeholders={"meter_count": str(len(meter_entries))},
+                )
+            if selected_distance_cycles and distance_sensor_entity_id is None:
+                return self.async_show_form(
+                    step_id="init",
+                    data_schema=self._get_data_schema(
+                        meter_entries, missing_meter_fields
+                    ),
+                    errors={"base": "distance_sensor_not_found"},
                     description_placeholders={"meter_count": str(len(meter_entries))},
                 )
 
@@ -124,11 +172,20 @@ class DistanceTrackerOptionsFlow(config_entries.OptionsFlow):
                 if meter_entry.entry_id in selected_ids:
                     await self.hass.config_entries.async_remove(meter_entry.entry_id)
 
-            if selected_time_cycles:
-                sensor_name = (
-                    self.config_entry.data.get("sensor_name")
-                    or f"{self.config_entry.title} Afstand"
+            sensor_name = (
+                self.config_entry.data.get("sensor_name")
+                or f"{self.config_entry.title} Afstand"
+            )
+            if selected_distance_cycles:
+                await async_create_utility_meters(
+                    self.hass,
+                    distance_sensor_entity_id,
+                    sensor_name,
+                    "Distance travelled",
+                    selected_distance_cycles,
                 )
+
+            if selected_time_cycles:
                 await async_create_utility_meters(
                     self.hass,
                     time_sensor_entity_id,
@@ -143,12 +200,12 @@ class DistanceTrackerOptionsFlow(config_entries.OptionsFlow):
 
         return self.async_show_form(
             step_id="init",
-            data_schema=self._get_data_schema(meter_entries),
+            data_schema=self._get_data_schema(meter_entries, missing_meter_fields),
             description_placeholders={"meter_count": str(len(meter_entries))},
         )
 
-    def _get_data_schema(self, meter_entries):
-        """Build options for removing meters and creating time meters."""
+    def _get_data_schema(self, meter_entries, missing_meter_fields):
+        """Build options for removing meters and creating missing meters."""
         meter_options = [
             {
                 "value": entry.entry_id,
@@ -170,7 +227,7 @@ class DistanceTrackerOptionsFlow(config_entries.OptionsFlow):
                 ),
                 **{
                     vol.Optional(field, default=False): selector.BooleanSelector()
-                    for field in TIME_METER_FIELDS
+                    for field in missing_meter_fields
                 },
             }
         )

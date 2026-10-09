@@ -31,21 +31,28 @@
   "options": {
     "step": {
       "init": {
-        "title": "Remove utility meters",
-        "description": "Tick the boxes next to utility meters to delete them; unchecked meters are kept. You can also create any missing time meters by checking their period below. {meter_count} linked utility meter(s) found.",
+        "title": "Manage utility meters",
+        "description": "Tick the boxes next to utility meters to delete them; unchecked meters are kept. Options to create distance or time utility meters are shown only when that meter is missing. {meter_count} linked utility meter(s) found.",
         "data": {
           "Select utility meters to delete (unchecked meters are kept)": "Select utility meters to delete (unchecked meters are kept)",
+          "Create daily distance utility meter if missing": "Create daily distance utility meter if missing",
+          "Create weekly distance utility meter if missing": "Create weekly distance utility meter if missing",
+          "Create monthly distance utility meter if missing": "Create monthly distance utility meter if missing",
           "Create daily time utility meter if missing": "Create daily time utility meter if missing",
           "Create weekly time utility meter if missing": "Create weekly time utility meter if missing",
           "Create monthly time utility meter if missing": "Create monthly time utility meter if missing"
         },
         "data_description": {
           "Select utility meters to delete (unchecked meters are kept)": "Select the meters to delete. Any meter you leave unselected will be kept.",
+          "Create daily distance utility meter if missing": "Create a daily helper for the distance sensor if one does not already exist.",
+          "Create weekly distance utility meter if missing": "Create a weekly helper for the distance sensor if one does not already exist.",
+          "Create monthly distance utility meter if missing": "Create a monthly helper for the distance sensor if one does not already exist.",
           "Create daily time utility meter if missing": "Create a daily helper for the time-spent sensor if one does not already exist.",
           "Create weekly time utility meter if missing": "Create a weekly helper for the time-spent sensor if one does not already exist.",
           "Create monthly time utility meter if missing": "Create a monthly helper for the time-spent sensor if one does not already exist."
         },
         "error": {
+          "distance_sensor_not_found": "The distance sensor is not available yet. Reload the integration and try again.",
           "time_sensor_not_found": "The time-spent sensor is not available yet. Reload the integration and try again."
         }
       }

@@ -12,6 +12,10 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Stel de integratie in vanuit een UI config entry."""
+    sensor_name = entry.data.get("sensor_name") or f"{entry.title} Afstand"
+    if entry.title != sensor_name:
+        hass.config_entries.async_update_entry(entry, title=sensor_name)
+
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = entry.data
 
