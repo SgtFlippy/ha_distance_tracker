@@ -132,7 +132,8 @@ class DistanceTrackerOptionsFlow(config_entries.OptionsFlow):
                 await async_create_utility_meters(
                     self.hass,
                     time_sensor_entity_id,
-                    f"{sensor_name} Time Spent",
+                    sensor_name,
+                    "Time traveled",
                     selected_time_cycles,
                 )
 

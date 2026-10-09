@@ -72,7 +72,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
             ),
             TimeSpentSensor(
                 entry.entry_id,
-                f"{sensor_name} Time Spent",
+                sensor_name,
                 bluetooth_entity,
                 time_utility_meter_cycles,
             ),
@@ -135,7 +135,11 @@ class DistanceSensor(RestoreEntity, SensorEntity):
     async def _async_create_utility_meters(self):
         """Create the selected Home Assistant utility meter helpers."""
         await async_create_utility_meters(
-            self.hass, self.entity_id, self.name, self._utility_meter_cycles
+            self.hass,
+            self.entity_id,
+            self.name,
+            "Distance travelled",
+            self._utility_meter_cycles,
         )
 
     @property
@@ -182,12 +186,13 @@ class TimeSpentSensor(RestoreEntity, SensorEntity):
 
     def __init__(self, entry_id, sensor_name, binary_sensor, utility_meter_cycles):
         self._entry_id = entry_id
+        self._sensor_name = sensor_name
         self._binary_sensor = binary_sensor
         self._utility_meter_cycles = utility_meter_cycles
         self._accumulated_seconds = 0.0
         self._tracking_started = None
 
-        self._attr_name = sensor_name
+        self._attr_name = f"{sensor_name} Time Spent"
         self._attr_unique_id = f"distance_tracker_{entry_id}_time"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry_id)},
@@ -221,7 +226,8 @@ class TimeSpentSensor(RestoreEntity, SensorEntity):
         await async_create_utility_meters(
             self.hass,
             self.entity_id,
-            self.name,
+            self._sensor_name,
+            "Time traveled",
             self._utility_meter_cycles,
         )
 
