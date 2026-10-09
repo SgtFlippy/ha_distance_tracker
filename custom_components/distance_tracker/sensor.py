@@ -1,12 +1,23 @@
+from datetime import timedelta
 import logging
 import math
-from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
-from homeassistant.const import UnitOfLength
-from homeassistant.helpers.event import async_track_state_change_event
+from time import monotonic
+
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorStateClass,
+)
+from homeassistant.const import UnitOfLength, UnitOfTime
+from homeassistant.helpers.device_registry import DeviceInfo
+from homeassistant.helpers.event import (
+    async_track_state_change_event,
+    async_track_time_interval,
+)
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.device_registry import DeviceInfo
+from .helpers import async_create_utility_meters
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -17,6 +28,11 @@ UTILITY_METER_OPTIONS = {
     "create_daily_utility_meter": "daily",
     "create_weekly_utility_meter": "weekly",
     "create_monthly_utility_meter": "monthly",
+}
+TIME_UTILITY_METER_OPTIONS = {
+    "create_daily_time_utility_meter": "daily",
+    "create_weekly_time_utility_meter": "weekly",
+    "create_monthly_time_utility_meter": "monthly",
 }
 
 def haversine(lon1, lat1, lon2, lat2):
@@ -38,6 +54,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         for option, cycle in UTILITY_METER_OPTIONS.items()
         if config.get(option, False)
     )
+    time_utility_meter_cycles = tuple(
+        cycle
+        for option, cycle in TIME_UTILITY_METER_OPTIONS.items()
+        if config.get(option, False)
+    )
     sensor_name = config.get("sensor_name") or f"{entry.title} Afstand"
     
     async_add_entities(
@@ -48,10 +69,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
                 tracker_entity,
                 bluetooth_entity,
                 utility_meter_cycles,
-            )
+            ),
+            TimeSpentSensor(
+                entry.entry_id,
+                f"{sensor_name} Time Spent",
+                bluetooth_entity,
+                time_utility_meter_cycles,
+            ),
         ],
         True,
     )
+
 
 class DistanceSensor(RestoreEntity, SensorEntity):
     """Sensor tracking total distance using breadcrumbs and UI config."""
@@ -104,40 +132,9 @@ class DistanceSensor(RestoreEntity, SensorEntity):
 
     async def _async_create_utility_meters(self):
         """Create the selected Home Assistant utility meter helpers."""
-        entries = self.hass.config_entries.async_entries("utility_meter")
-
-        for cycle in self._utility_meter_cycles:
-            meter_name = f"{self.name} {cycle}"
-            if any(
-                entry.title == meter_name
-                and entry.options.get("source") == self.entity_id
-                and entry.options.get("cycle") == cycle
-                for entry in entries
-            ):
-                continue
-
-            result = await self.hass.config_entries.flow.async_init(
-                "utility_meter",
-                context={"source": "user"},
-                data={
-                    "name": meter_name,
-                    "source": self.entity_id,
-                    "cycle": cycle,
-                    "offset": 0,
-                    "tariffs": [],
-                    "net_consumption": False,
-                    "delta_values": False,
-                    "periodically_resetting": True,
-                    "always_available": False,
-                },
-            )
-            if result["type"] != "create_entry":
-                _LOGGER.error(
-                    "Could not create %s utility meter for %s: %s",
-                    cycle,
-                    self.entity_id,
-                    result,
-                )
+        await async_create_utility_meters(
+            self.hass, self.entity_id, self.name, self._utility_meter_cycles
+        )
 
     @property
     def native_value(self):
@@ -176,3 +173,113 @@ class DistanceSensor(RestoreEntity, SensorEntity):
 
         self._last_lat = lat
         self._last_lon = lon
+
+
+class TimeSpentSensor(RestoreEntity, SensorEntity):
+    """Track cumulative time while the configured binary sensor is on."""
+
+    def __init__(self, entry_id, sensor_name, binary_sensor, utility_meter_cycles):
+        self._entry_id = entry_id
+        self._binary_sensor = binary_sensor
+        self._utility_meter_cycles = utility_meter_cycles
+        self._accumulated_seconds = 0.0
+        self._tracking_started = None
+
+        self._attr_name = sensor_name
+        self._attr_unique_id = f"distance_tracker_{entry_id}_time"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, entry_id)},
+            name=sensor_name.removesuffix(" Time Spent"),
+            manufacturer="Distance Tracker",
+        )
+        self._attr_device_class = SensorDeviceClass.DURATION
+        self._attr_state_class = SensorStateClass.TOTAL_INCREASING
+        self._attr_native_unit_of_measurement = UnitOfTime.SECONDS
+        self._attr_icon = "mdi:timer-outline"
+
+    async def async_added_to_hass(self):
+        """Restore accumulated time and start tracking if currently active."""
+        await super().async_added_to_hass()
+
+        old_state = await self.async_get_last_state()
+        if old_state is not None and old_state.state not in (
+            None,
+            "unknown",
+            "unavailable",
+        ):
+            try:
+                self._accumulated_seconds = float(old_state.state)
+            except ValueError:
+                _LOGGER.warning("Could not restore time sensor state %s", old_state.state)
+
+        binary_state = self.hass.states.get(self._binary_sensor)
+        if binary_state is not None and binary_state.state == "on":
+            self._tracking_started = monotonic()
+
+        await async_create_utility_meters(
+            self.hass,
+            self.entity_id,
+            self.name,
+            self._utility_meter_cycles,
+        )
+
+        self.async_on_remove(
+            async_track_state_change_event(
+                self.hass, [self._binary_sensor], self._async_binary_sensor_changed
+            )
+        )
+        self.async_on_remove(
+            async_track_time_interval(
+                self.hass, self._async_update, timedelta(seconds=30)
+            )
+        )
+        self.async_on_remove(
+            self.hass.bus.async_listen(
+                f"distance_tracker_reset_{self._entry_id}", self._async_reset
+            )
+        )
+
+    @property
+    def native_value(self):
+        """Return total time in seconds."""
+        total = self._accumulated_seconds
+        if self._tracking_started is not None:
+            total += monotonic() - self._tracking_started
+        return round(total, 2)
+
+    async def _async_binary_sensor_changed(self, event):
+        """Start or stop accumulating time when tracking is toggled."""
+        new_state = event.data.get("new_state")
+        if new_state is None:
+            return
+
+        if new_state.state == "on":
+            if self._tracking_started is None:
+                self._tracking_started = monotonic()
+        elif self._tracking_started is not None:
+            self._accumulated_seconds += monotonic() - self._tracking_started
+            self._tracking_started = None
+
+        self.async_write_ha_state()
+
+    async def _async_update(self, now):
+        """Refresh the displayed duration while tracking is active."""
+        if self._tracking_started is not None:
+            self.async_write_ha_state()
+
+    async def _async_reset(self, event):
+        """Reset accumulated time when the integration reset service is called."""
+        self._accumulated_seconds = 0.0
+        binary_state = self.hass.states.get(self._binary_sensor)
+        self._tracking_started = (
+            monotonic() if binary_state is not None and binary_state.state == "on" else None
+        )
+        self.async_write_ha_state()
+
+    async def async_will_remove_from_hass(self):
+        """Persist elapsed time before the entity is unloaded."""
+        if self._tracking_started is not None:
+            self._accumulated_seconds += monotonic() - self._tracking_started
+            self._tracking_started = None
+            self.async_write_ha_state()
+        await super().async_will_remove_from_hass()

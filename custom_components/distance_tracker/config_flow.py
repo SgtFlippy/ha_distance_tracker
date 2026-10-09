@@ -1,6 +1,7 @@
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.helpers import entity_registry, selector
+from .helpers import async_create_utility_meters
 
 DOMAIN = "distance_tracker"
 UTILITY_METER_DOMAIN = "utility_meter"
@@ -10,9 +11,17 @@ CONFIG_FIELDS = {
     "create_daily_utility_meter": "Create daily utility meter (resets every day)",
     "create_weekly_utility_meter": "Create weekly utility meter (resets every week)",
     "create_monthly_utility_meter": "Create monthly utility meter (resets every month)",
+    "create_daily_time_utility_meter": "Create daily time utility meter (resets every day)",
+    "create_weekly_time_utility_meter": "Create weekly time utility meter (resets every week)",
+    "create_monthly_time_utility_meter": "Create monthly time utility meter (resets every month)",
     "sensor_name": "Name for the distance sensor",
 }
 UTILITY_METERS_FIELD = "Select utility meters to delete (unchecked meters are kept)"
+TIME_METER_FIELDS = {
+    "Create daily time utility meter if missing": "daily",
+    "Create weekly time utility meter if missing": "weekly",
+    "Create monthly time utility meter if missing": "monthly",
+}
 
 class DistanceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Distance Tracker."""
@@ -48,6 +57,15 @@ class DistanceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required(CONFIG_FIELDS["create_monthly_utility_meter"], default=False): (
                     selector.BooleanSelector()
                 ),
+                vol.Required(CONFIG_FIELDS["create_daily_time_utility_meter"], default=False): (
+                    selector.BooleanSelector()
+                ),
+                vol.Required(CONFIG_FIELDS["create_weekly_time_utility_meter"], default=False): (
+                    selector.BooleanSelector()
+                ),
+                vol.Required(CONFIG_FIELDS["create_monthly_time_utility_meter"], default=False): (
+                    selector.BooleanSelector()
+                ),
                 vol.Required(CONFIG_FIELDS["sensor_name"]): selector.TextSelector(),
             }
         )
@@ -67,29 +85,69 @@ class DistanceTrackerOptionsFlow(config_entries.OptionsFlow):
     async def async_step_init(self, user_input=None):
         """Offer removal of utility meters linked to this distance sensor."""
         registry = entity_registry.async_get(self.hass)
-        sensor_entity_id = registry.async_get_entity_id(
+        distance_sensor_entity_id = registry.async_get_entity_id(
             "sensor",
             DOMAIN,
             f"distance_tracker_{self.config_entry.entry_id}_distance",
         )
+        time_sensor_entity_id = registry.async_get_entity_id(
+            "sensor", DOMAIN, f"distance_tracker_{self.config_entry.entry_id}_time"
+        )
+        sensor_entity_ids = {
+            entity_id
+            for entity_id in (distance_sensor_entity_id, time_sensor_entity_id)
+            if entity_id is not None
+        }
         meter_entries = [
             entry
             for entry in self.hass.config_entries.async_entries(UTILITY_METER_DOMAIN)
-            if sensor_entity_id is not None
-            and entry.options.get("source", entry.data.get("source"))
-            == sensor_entity_id
+            if entry.options.get("source", entry.data.get("source"))
+            in sensor_entity_ids
         ]
 
         if user_input is not None:
+            selected_time_cycles = [
+                cycle
+                for field, cycle in TIME_METER_FIELDS.items()
+                if user_input.get(field, False)
+            ]
+            if selected_time_cycles and time_sensor_entity_id is None:
+                return self.async_show_form(
+                    step_id="init",
+                    data_schema=self._get_data_schema(meter_entries),
+                    errors={"base": "time_sensor_not_found"},
+                    description_placeholders={"meter_count": str(len(meter_entries))},
+                )
+
             selected_ids = set(user_input.get(UTILITY_METERS_FIELD, []))
             for meter_entry in meter_entries:
                 if meter_entry.entry_id in selected_ids:
                     await self.hass.config_entries.async_remove(meter_entry.entry_id)
 
+            if selected_time_cycles:
+                sensor_name = (
+                    self.config_entry.data.get("sensor_name")
+                    or f"{self.config_entry.title} Afstand"
+                )
+                await async_create_utility_meters(
+                    self.hass,
+                    time_sensor_entity_id,
+                    f"{sensor_name} Time Spent",
+                    selected_time_cycles,
+                )
+
             return self.async_create_entry(
                 title="", data=dict(self.config_entry.options)
             )
 
+        return self.async_show_form(
+            step_id="init",
+            data_schema=self._get_data_schema(meter_entries),
+            description_placeholders={"meter_count": str(len(meter_entries))},
+        )
+
+    def _get_data_schema(self, meter_entries):
+        """Build options for removing meters and creating time meters."""
         meter_options = [
             {
                 "value": entry.entry_id,
@@ -108,12 +166,11 @@ class DistanceTrackerOptionsFlow(config_entries.OptionsFlow):
                         multiple=True,
                         mode=selector.SelectSelectorMode.LIST,
                     )
-                )
+                ),
+                **{
+                    vol.Optional(field, default=False): selector.BooleanSelector()
+                    for field in TIME_METER_FIELDS
+                },
             }
         )
-
-        return self.async_show_form(
-            step_id="init",
-            data_schema=data_schema,
-            description_placeholders={"meter_count": str(len(meter_entries))},
-        )
+        return data_schema

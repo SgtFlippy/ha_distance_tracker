@@ -2,13 +2,16 @@
   "config": {
     "step": {
       "user": {
-        "description": "Kies het apparaat en de binaire sensor voor het bijhouden van de afstand. Vink aan voor welke perioden je een utility meter wilt laten aanmaken.",
+        "description": "Kies het apparaat en de binaire sensor voor het bijhouden van de afstand en tijd. Kies afzonderlijk voor welke perioden je afstands- en tijds-utility meters wilt aanmaken.",
         "data": {
           "Choose the device to track": "Kies het apparaat om te volgen",
           "Choose the binary sensor that needs to be on to track": "Kies de binaire sensor die ingeschakeld moet zijn om het bijhouden te starten",
           "Create daily utility meter (resets every day)": "Dagelijkse utility meter aanmaken (wordt elke dag gereset)",
           "Create weekly utility meter (resets every week)": "Wekelijkse utility meter aanmaken (wordt elke week gereset)",
           "Create monthly utility meter (resets every month)": "Maandelijkse utility meter aanmaken (wordt elke maand gereset)",
+          "Create daily time utility meter (resets every day)": "Dagelijkse tijds-utility meter aanmaken (wordt elke dag gereset)",
+          "Create weekly time utility meter (resets every week)": "Wekelijkse tijds-utility meter aanmaken (wordt elke week gereset)",
+          "Create monthly time utility meter (resets every month)": "Maandelijkse tijds-utility meter aanmaken (wordt elke maand gereset)",
           "Name for the distance sensor": "Naam voor de afstandssensor"
         },
         "data_description": {
@@ -17,6 +20,9 @@
           "Create daily utility meter (resets every day)": "Vink aan om automatisch een helper aan te maken die dagelijks wordt gereset.",
           "Create weekly utility meter (resets every week)": "Vink aan om automatisch een helper aan te maken die wekelijks wordt gereset.",
           "Create monthly utility meter (resets every month)": "Vink aan om automatisch een helper aan te maken die maandelijks wordt gereset.",
+          "Create daily time utility meter (resets every day)": "Vink aan voor een aparte helper die de tijd optelt zolang de binaire sensor aan staat en dagelijks wordt gereset.",
+          "Create weekly time utility meter (resets every week)": "Vink aan voor een aparte helper die de tijd optelt zolang de binaire sensor aan staat en wekelijks wordt gereset.",
+          "Create monthly time utility meter (resets every month)": "Vink aan voor een aparte helper die de tijd optelt zolang de binaire sensor aan staat en maandelijks wordt gereset.",
           "Name for the distance sensor": "Voer de naam in die Home Assistant voor de afstandssensor moet weergeven."
         }
       }
@@ -26,12 +32,21 @@
     "step": {
       "init": {
         "title": "Utility meters verwijderen",
-        "description": "Vink de utility meters aan die je wilt verwijderen. Niet-aangevinkte meters blijven behouden. Er zijn {meter_count} gekoppelde utility meter(s) gevonden.",
+        "description": "Vink de vakjes aan naast utility meters die je wilt verwijderen; niet-aangevinkte meters blijven behouden. Je kunt hieronder ook ontbrekende tijdsmeters aanmaken door de periode aan te vinken. Er zijn {meter_count} gekoppelde utility meter(s) gevonden.",
         "data": {
-          "Select utility meters to delete (unchecked meters are kept)": "Selecteer utility meters om te verwijderen (niet-aangevinkte meters blijven behouden)"
+          "Select utility meters to delete (unchecked meters are kept)": "Selecteer utility meters om te verwijderen (niet-aangevinkte meters blijven behouden)",
+          "Create daily time utility meter if missing": "Dagelijkse tijds-utility meter aanmaken als deze ontbreekt",
+          "Create weekly time utility meter if missing": "Wekelijkse tijds-utility meter aanmaken als deze ontbreekt",
+          "Create monthly time utility meter if missing": "Maandelijkse tijds-utility meter aanmaken als deze ontbreekt"
         },
         "data_description": {
-          "Select utility meters to delete (unchecked meters are kept)": "Selecteer de meters die verwijderd moeten worden. Niet-aangevinkte meters blijven behouden."
+          "Select utility meters to delete (unchecked meters are kept)": "Selecteer de meters die verwijderd moeten worden. Niet-aangevinkte meters blijven behouden.",
+          "Create daily time utility meter if missing": "Maak een dagelijkse helper aan voor de tijdsensor als deze nog niet bestaat.",
+          "Create weekly time utility meter if missing": "Maak een wekelijkse helper aan voor de tijdsensor als deze nog niet bestaat.",
+          "Create monthly time utility meter if missing": "Maak een maandelijkse helper aan voor de tijdsensor als deze nog niet bestaat."
+        },
+        "error": {
+          "time_sensor_not_found": "De tijdsensor is nog niet beschikbaar. Herlaad de integratie en probeer het opnieuw."
         }
       }
     }
