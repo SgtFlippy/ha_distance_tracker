@@ -1,5 +1,5 @@
 # ha_distance_tracker
-The integration also creates a cumulative time sensor that counts how long the selected binary sensor is on. It reports seconds as a duration and restores its accumulated total after a restart. Time while Home Assistant is stopped is not counted.
+The integration also creates a cumulative time sensor that counts how long the selected binary sensor is on. It reports the total in hours and restores its accumulated total after a restart. Time while Home Assistant is stopped is not counted. Time Utility Meter helpers use hours as well.
 
 During setup, independently choose whether to create daily, weekly, and/or monthly Utility Meter helpers for distance and for time. Each selected helper is created as a standard Home Assistant Utility Meter.
 

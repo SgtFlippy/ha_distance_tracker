@@ -22,9 +22,9 @@
           "Create daily distance utility meter (resets every day)": "Maakt een meter aan die de afgelegde afstand optelt en dagelijks wordt gereset.",
           "Create weekly distance utility meter (resets every week)": "Maakt een meter aan die de afgelegde afstand optelt en wekelijks wordt gereset.",
           "Create monthly distance utility meter (resets every month)": "Maakt een meter aan die de afgelegde afstand optelt en maandelijks wordt gereset.",
-          "Create daily time utility meter (resets every day)": "Vink aan voor een aparte helper die de tijd optelt zolang de binaire sensor aan staat en dagelijks wordt gereset.",
-          "Create weekly time utility meter (resets every week)": "Vink aan voor een aparte helper die de tijd optelt zolang de binaire sensor aan staat en wekelijks wordt gereset.",
-          "Create monthly time utility meter (resets every month)": "Vink aan voor een aparte helper die de tijd optelt zolang de binaire sensor aan staat en maandelijks wordt gereset.",
+          "Create daily time utility meter (resets every day)": "Vink aan voor een aparte helper die de tijd in uren optelt zolang de binaire sensor aan staat en dagelijks wordt gereset.",
+          "Create weekly time utility meter (resets every week)": "Vink aan voor een aparte helper die de tijd in uren optelt zolang de binaire sensor aan staat en wekelijks wordt gereset.",
+          "Create monthly time utility meter (resets every month)": "Vink aan voor een aparte helper die de tijd in uren optelt zolang de binaire sensor aan staat en maandelijks wordt gereset.",
           "Name for the distance sensor": "Voer de naam in die Home Assistant voor de afstandssensor moet weergeven."
         }
       }
@@ -49,9 +49,9 @@
           "Create daily distance utility meter if missing": "Maak een dagelijkse helper aan voor de afstandssensor als deze nog niet bestaat.",
           "Create weekly distance utility meter if missing": "Maak een wekelijkse helper aan voor de afstandssensor als deze nog niet bestaat.",
           "Create monthly distance utility meter if missing": "Maak een maandelijkse helper aan voor de afstandssensor als deze nog niet bestaat.",
-          "Create daily time utility meter if missing": "Maak een dagelijkse helper aan voor de tijdsensor als deze nog niet bestaat.",
-          "Create weekly time utility meter if missing": "Maak een wekelijkse helper aan voor de tijdsensor als deze nog niet bestaat.",
-          "Create monthly time utility meter if missing": "Maak een maandelijkse helper aan voor de tijdsensor als deze nog niet bestaat."
+          "Create daily time utility meter if missing": "Maak een dagelijkse helper in uren aan voor de tijdsensor als deze nog niet bestaat.",
+          "Create weekly time utility meter if missing": "Maak een wekelijkse helper in uren aan voor de tijdsensor als deze nog niet bestaat.",
+          "Create monthly time utility meter if missing": "Maak een maandelijkse helper in uren aan voor de tijdsensor als deze nog niet bestaat."
         },
         "error": {
           "distance_sensor_not_found": "De afstandssensor is nog niet beschikbaar. Herlaad de integratie en probeer het opnieuw.",

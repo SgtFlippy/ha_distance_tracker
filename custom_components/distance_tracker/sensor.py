@@ -216,7 +216,7 @@ class TimeSpentSensor(RestoreEntity, SensorEntity):
         )
         self._attr_device_class = SensorDeviceClass.DURATION
         self._attr_state_class = SensorStateClass.TOTAL_INCREASING
-        self._attr_native_unit_of_measurement = UnitOfTime.SECONDS
+        self._attr_native_unit_of_measurement = UnitOfTime.HOURS
         self._attr_icon = "mdi:timer-outline"
 
     async def async_added_to_hass(self):
@@ -230,7 +230,15 @@ class TimeSpentSensor(RestoreEntity, SensorEntity):
             "unavailable",
         ):
             try:
-                self._accumulated_seconds = float(old_state.state)
+                restored_value = float(old_state.state)
+                restored_unit = old_state.attributes.get(
+                    "unit_of_measurement", UnitOfTime.SECONDS
+                )
+                if restored_unit == UnitOfTime.SECONDS:
+                    restored_value /= 3600
+                elif restored_unit == UnitOfTime.MINUTES:
+                    restored_value /= 60
+                self._accumulated_seconds = restored_value * 3600
             except ValueError:
                 _LOGGER.warning("Could not restore time sensor state %s", old_state.state)
 
@@ -264,11 +272,11 @@ class TimeSpentSensor(RestoreEntity, SensorEntity):
 
     @property
     def native_value(self):
-        """Return total time in seconds."""
+        """Return total time in hours."""
         total = self._accumulated_seconds
         if self._tracking_started is not None:
             total += monotonic() - self._tracking_started
-        return round(total, 2)
+        return round(total / 3600, 4)
 
     async def _async_binary_sensor_changed(self, event):
         """Start or stop accumulating time when tracking is toggled."""

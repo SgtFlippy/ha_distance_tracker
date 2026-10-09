@@ -22,9 +22,9 @@
           "Create daily distance utility meter (resets every day)": "Creates a meter that totals the distance traveled and resets daily.",
           "Create weekly distance utility meter (resets every week)": "Creates a meter that totals the distance traveled and resets weekly.",
           "Create monthly distance utility meter (resets every month)": "Creates a meter that totals the distance traveled and resets monthly.",
-          "Create daily time utility meter (resets every day)": "Check this to create a separate helper that totals time spent with the binary sensor on, resetting daily.",
-          "Create weekly time utility meter (resets every week)": "Check this to create a separate helper that totals time spent with the binary sensor on, resetting weekly.",
-          "Create monthly time utility meter (resets every month)": "Check this to create a separate helper that totals time spent with the binary sensor on, resetting monthly.",
+          "Create daily time utility meter (resets every day)": "Check this to create a separate helper that totals time in hours spent with the binary sensor on, resetting daily.",
+          "Create weekly time utility meter (resets every week)": "Check this to create a separate helper that totals time in hours spent with the binary sensor on, resetting weekly.",
+          "Create monthly time utility meter (resets every month)": "Check this to create a separate helper that totals time in hours spent with the binary sensor on, resetting monthly.",
           "Name for the distance sensor": "Enter the name you want Home Assistant to show for the distance sensor."
         }
       }
@@ -49,9 +49,9 @@
           "Create daily distance utility meter if missing": "Create a daily helper for the distance sensor if one does not already exist.",
           "Create weekly distance utility meter if missing": "Create a weekly helper for the distance sensor if one does not already exist.",
           "Create monthly distance utility meter if missing": "Create a monthly helper for the distance sensor if one does not already exist.",
-          "Create daily time utility meter if missing": "Create a daily helper for the time-spent sensor if one does not already exist.",
-          "Create weekly time utility meter if missing": "Create a weekly helper for the time-spent sensor if one does not already exist.",
-          "Create monthly time utility meter if missing": "Create a monthly helper for the time-spent sensor if one does not already exist."
+          "Create daily time utility meter if missing": "Create a daily helper in hours for the time-spent sensor if one does not already exist.",
+          "Create weekly time utility meter if missing": "Create a weekly helper in hours for the time-spent sensor if one does not already exist.",
+          "Create monthly time utility meter if missing": "Create a monthly helper in hours for the time-spent sensor if one does not already exist."
         },
         "error": {
           "distance_sensor_not_found": "The distance sensor is not available yet. Reload the integration and try again.",
