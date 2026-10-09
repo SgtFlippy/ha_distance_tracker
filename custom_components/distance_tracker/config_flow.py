@@ -25,6 +25,15 @@ class DistanceTrackerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required("binary_sensor"): selector.EntitySelector(
                     selector.EntitySelectorConfig(domain="binary_sensor")
                 ),
+                vol.Required("create_daily_utility_meter", default=False): (
+                    selector.BooleanSelector()
+                ),
+                vol.Required("create_weekly_utility_meter", default=False): (
+                    selector.BooleanSelector()
+                ),
+                vol.Required("create_monthly_utility_meter", default=False): (
+                    selector.BooleanSelector()
+                ),
             }
         )
 

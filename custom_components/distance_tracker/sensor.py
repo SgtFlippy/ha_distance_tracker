@@ -12,6 +12,11 @@ _LOGGER = logging.getLogger(__name__)
 DOMAIN = "distance_tracker"
 MIN_ACCURACY = 25
 MIN_DISTANCE = 0.005
+UTILITY_METER_OPTIONS = {
+    "create_daily_utility_meter": "daily",
+    "create_weekly_utility_meter": "weekly",
+    "create_monthly_utility_meter": "monthly",
+}
 
 def haversine(lon1, lat1, lon2, lat2):
     rad_earth = 6371.0
@@ -27,16 +32,35 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     config = entry.data
     tracker_entity = config.get("device_tracker")
     bluetooth_entity = config.get("binary_sensor")
+    utility_meter_cycles = tuple(
+        cycle
+        for option, cycle in UTILITY_METER_OPTIONS.items()
+        if config.get(option, False)
+    )
     
-    async_add_entities([DistanceSensor(entry.entry_id, entry.title, tracker_entity, bluetooth_entity)], True)
+    async_add_entities(
+        [
+            DistanceSensor(
+                entry.entry_id,
+                entry.title,
+                tracker_entity,
+                bluetooth_entity,
+                utility_meter_cycles,
+            )
+        ],
+        True,
+    )
 
 class DistanceSensor(RestoreEntity, SensorEntity):
     """Sensor tracking total distance using breadcrumbs and UI config."""
 
-    def __init__(self, entry_id, title, tracker_entity, bluetooth_entity):
+    def __init__(
+        self, entry_id, title, tracker_entity, bluetooth_entity, utility_meter_cycles
+    ):
         self._entry_id = entry_id
         self._tracker_entity = tracker_entity
         self._bluetooth_entity = bluetooth_entity
+        self._utility_meter_cycles = utility_meter_cycles
         
         self._attr_name = f"{title} Afstand"
         self._attr_unique_id = f"distance_tracker_{entry_id}_distance"
@@ -49,6 +73,8 @@ class DistanceSensor(RestoreEntity, SensorEntity):
 
     async def async_added_to_hass(self):
         await super().async_added_to_hass()
+
+        await self._async_create_utility_meters()
         
         old_state = await self.async_get_last_state()
         if old_state is not None and old_state.state not in (None, "unknown", "unavailable"):
@@ -68,6 +94,43 @@ class DistanceSensor(RestoreEntity, SensorEntity):
                 self.hass, [self._tracker_entity], self._async_tracker_changed
             )
         )
+
+    async def _async_create_utility_meters(self):
+        """Create the selected Home Assistant utility meter helpers."""
+        entries = self.hass.config_entries.async_entries("utility_meter")
+
+        for cycle in self._utility_meter_cycles:
+            meter_name = f"{self.name} {cycle}"
+            if any(
+                entry.title == meter_name
+                and entry.options.get("source") == self.entity_id
+                and entry.options.get("cycle") == cycle
+                for entry in entries
+            ):
+                continue
+
+            result = await self.hass.config_entries.flow.async_init(
+                "utility_meter",
+                context={"source": "user"},
+                data={
+                    "name": meter_name,
+                    "source": self.entity_id,
+                    "cycle": cycle,
+                    "offset": 0,
+                    "tariffs": [],
+                    "net_consumption": False,
+                    "delta_values": False,
+                    "periodically_resetting": True,
+                    "always_available": False,
+                },
+            )
+            if result["type"] != "create_entry":
+                _LOGGER.error(
+                    "Could not create %s utility meter for %s: %s",
+                    cycle,
+                    self.entity_id,
+                    result,
+                )
 
     @property
     def native_value(self):
