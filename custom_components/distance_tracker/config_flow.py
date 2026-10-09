@@ -8,9 +8,9 @@ UTILITY_METER_DOMAIN = "utility_meter"
 CONFIG_FIELDS = {
     "device_tracker": "Choose the device to track",
     "binary_sensor": "Choose the binary sensor that needs to be on to track",
-    "create_daily_utility_meter": "Create daily utility meter (resets every day)",
-    "create_weekly_utility_meter": "Create weekly utility meter (resets every week)",
-    "create_monthly_utility_meter": "Create monthly utility meter (resets every month)",
+    "create_daily_utility_meter": "Create daily distance utility meter (resets every day)",
+    "create_weekly_utility_meter": "Create weekly distance utility meter (resets every week)",
+    "create_monthly_utility_meter": "Create monthly distance utility meter (resets every month)",
     "create_daily_time_utility_meter": "Create daily time utility meter (resets every day)",
     "create_weekly_time_utility_meter": "Create weekly time utility meter (resets every week)",
     "create_monthly_time_utility_meter": "Create monthly time utility meter (resets every month)",

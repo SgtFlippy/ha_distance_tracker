@@ -118,9 +118,11 @@ class DistanceSensor(RestoreEntity, SensorEntity):
             except ValueError:
                 self._state = 0.0
 
-        # Listen for reset event specific to this entry
         self.async_on_remove(
-            self.hass.bus.async_listen(f"distance_tracker_reset_{self._entry_id}", self._handle_reset_event)
+            self.hass.bus.async_listen(
+                f"distance_tracker_reset_distance_{self._entry_id}",
+                self._handle_reset_event,
+            )
         )
 
         # Listen for tracker changes
@@ -235,7 +237,7 @@ class TimeSpentSensor(RestoreEntity, SensorEntity):
         )
         self.async_on_remove(
             self.hass.bus.async_listen(
-                f"distance_tracker_reset_{self._entry_id}", self._async_reset
+                f"distance_tracker_reset_time_{self._entry_id}", self._async_reset
             )
         )
 
@@ -268,7 +270,7 @@ class TimeSpentSensor(RestoreEntity, SensorEntity):
             self.async_write_ha_state()
 
     async def _async_reset(self, event):
-        """Reset accumulated time when the integration reset service is called."""
+        """Reset accumulated time when the reset button is pressed."""
         self._accumulated_seconds = 0.0
         binary_state = self.hass.states.get(self._binary_sensor)
         self._tracking_started = (

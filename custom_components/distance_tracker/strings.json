@@ -6,9 +6,9 @@
         "data": {
           "Choose the device to track": "Choose the device to track",
           "Choose the binary sensor that needs to be on to track": "Choose the binary sensor that needs to be on to track",
-          "Create daily utility meter (resets every day)": "Create daily utility meter (resets every day)",
-          "Create weekly utility meter (resets every week)": "Create weekly utility meter (resets every week)",
-          "Create monthly utility meter (resets every month)": "Create monthly utility meter (resets every month)",
+          "Create daily distance utility meter (resets every day)": "Create daily distance utility meter (resets every day)",
+          "Create weekly distance utility meter (resets every week)": "Create weekly distance utility meter (resets every week)",
+          "Create monthly distance utility meter (resets every month)": "Create monthly distance utility meter (resets every month)",
           "Create daily time utility meter (resets every day)": "Create daily time utility meter (resets every day)",
           "Create weekly time utility meter (resets every week)": "Create weekly time utility meter (resets every week)",
           "Create monthly time utility meter (resets every month)": "Create monthly time utility meter (resets every month)",
@@ -17,9 +17,9 @@
         "data_description": {
           "Choose the device to track": "Select the device tracker whose GPS location should be used to calculate distance.",
           "Choose the binary sensor that needs to be on to track": "Distance is recorded only while this binary sensor is on.",
-          "Create daily utility meter (resets every day)": "Check this to automatically create a helper that resets daily.",
-          "Create weekly utility meter (resets every week)": "Check this to automatically create a helper that resets weekly.",
-          "Create monthly utility meter (resets every month)": "Check this to automatically create a helper that resets monthly.",
+          "Create daily distance utility meter (resets every day)": "Creates a meter that totals the distance traveled and resets daily.",
+          "Create weekly distance utility meter (resets every week)": "Creates a meter that totals the distance traveled and resets weekly.",
+          "Create monthly distance utility meter (resets every month)": "Creates a meter that totals the distance traveled and resets monthly.",
           "Create daily time utility meter (resets every day)": "Check this to create a separate helper that totals time spent with the binary sensor on, resetting daily.",
           "Create weekly time utility meter (resets every week)": "Check this to create a separate helper that totals time spent with the binary sensor on, resetting weekly.",
           "Create monthly time utility meter (resets every month)": "Check this to create a separate helper that totals time spent with the binary sensor on, resetting monthly.",
@@ -48,6 +48,16 @@
         "error": {
           "time_sensor_not_found": "The time-spent sensor is not available yet. Reload the integration and try again."
         }
+      }
+    }
+  },
+  "entity": {
+    "button": {
+      "reset_distance": {
+        "name": "Reset distance counter"
+      },
+      "reset_time": {
+        "name": "Reset time counter"
       }
     }
   }
