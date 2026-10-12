@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#03a9f4" />
+      <stop offset="100%" stop-color="#01579b" />
+    </linearGradient>
+    <linearGradient id="pathGrad" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.5" />
+      <stop offset="50%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.5" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Card -->
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" />
+
+  <!-- Sensor Signal Waves -->
+  <path d="M 256 120 A 136 136 0 0 1 392 256" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" opacity="0.4" />
+  <path d="M 256 160 A 96 96 0 0 1 352 256" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" opacity="0.7" />
+  <circle cx="256" cy="256" r="48" fill="#ffffff" opacity="0.9" />
+
+  <!-- Distance Route / Track Line -->
+  <path d="M 96 380 Q 180 320 256 380 T 416 380" fill="none" stroke="url(#pathGrad)" stroke-width="20" stroke-linecap="round" stroke-dasharray="16 12" />
+
+  <!-- Pin / Marker Icon symbolizing tracking position -->
+  <path d="M 256 220 C 230 220 210 240 210 266 C 210 302 256 348 256 348 C 256 348 302 302 302 266 C 302 240 282 220 256 220 Z" fill="#ff5722" />
+  <circle cx="256" cy="264" r="12" fill="#ffffff" />
+</svg>
